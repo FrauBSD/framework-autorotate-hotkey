@@ -1,0 +1,9 @@
+id rotate
+group x11/framework-autorotate-hotkey
+label Auto rotate
+chord Super+r
+chord Super+o kde xfce
+command auto-rotate-toggle
+repeat 0
+greeter 1
+desc Turn screen rotation on or off.
