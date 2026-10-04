@@ -1,0 +1,100 @@
+#!/bin/sh
+############################################################ LICENSE
+#
+# Copyright (c) 2026 Devin Teske <dteske@FreeBSD.org>
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+############################################################ IDENT(1)
+#
+# $Title: Toggle autorotate hold and show the glyph $
+# $Copyright: 2026 Devin Teske. All rights reserved. $
+# $FrauBSD: framework-autorotate-hotkey/bin/auto-rotate-toggle 2026-10-04 14:18:27 -0700 Devin Teske $
+#
+############################################################ INFORMATION
+#
+# Toggle the autorotate hold and show the matching glyph through bosd.
+# The rotate plugin runs this in the session and at the greeter.
+#
+# The hold file is under the real uid's passwd home, the same
+# place framework_autorotate -hold uses. The greeter runs as
+# root, so the file is under ~root. A session uses the login
+# user's home. Greeter helpers often set HOME to the login
+# user; do not trust $HOME for this check.
+#
+############################################################ ENVIRONMENT
+
+DISPLAY=${DISPLAY:-:0}
+export DISPLAY
+
+# Session PATH often omits sbin, where framework_autorotate lives
+_PATH="$PATH"
+PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
+[ "$_PATH" ] && PATH="$PATH:$_PATH"
+unset _PATH
+export PATH
+
+############################################################ GLOBALS
+
+pgm="${0##*/}" # Program basename
+
+#
+# Global exit status
+#
+SUCCESS=0
+FAILURE=1
+
+############################################################ FUNCTIONS
+
+quietly() { "$@" > /dev/null 2>&1; }
+have() { quietly command -v "$@"; }
+
+passwd_home()
+{
+	getent passwd "$1" 2> /dev/null | cut -d: -f6
+}
+
+show_osd()
+{
+	local mode="$1"
+
+	have bosd || return 0
+	bosd "auto-rotate-$mode" 2 &
+}
+
+############################################################ MAIN
+
+set -e # errexit
+
+uid=$( id -u )
+hold_home=$( passwd_home "$uid" ) || hold_home=
+if [ ! "$hold_home" ]; then
+	if [ "$uid" -eq 0 ]; then
+		hold_home=/root
+	else
+		hold_home="${HOME:-/tmp}"
+	fi
+fi
+hold="$hold_home/.framework_hold_autorotate"
+
+if ! have framework_autorotate ||
+   ! framework_autorotate -h 2>&1 | grep -qF -- "-hold"
+then
+	echo "$pgm: framework_autorotate -hold/-release" \
+		"not available" >&2
+	exit $FAILURE
+fi
+
+if [ -e "$hold" ]; then
+	framework_autorotate -release
+	show_osd on
+else
+	framework_autorotate -hold
+	show_osd off
+fi
+
+exit $SUCCESS
+
+################################################################################
+# END
+################################################################################
