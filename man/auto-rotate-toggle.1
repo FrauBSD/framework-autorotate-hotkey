@@ -1,0 +1,106 @@
+.\" Copyright (c) 2026 Devin Teske <dteske@FreeBSD.org>
+.\"
+.\" SPDX-License-Identifier: BSD-2-Clause
+.\"
+.Dd October 5, 2026
+.Dt AUTO-ROTATE-TOGGLE 1
+.Os
+.Sh NAME
+.Nm auto-rotate-toggle
+.Nd toggle screen auto-rotation
+.Sh SYNOPSIS
+.Nm
+.Sh DESCRIPTION
+.Nm
+toggles the autorotate hold and shows the new state with
+.Xr bosd 1 .
+The usual chord is
+.Sy Super+R .
+Under KDE and Xfce the chord is
+.Sy Super+O ,
+because both bind
+.Sy Super+R .
+The plugin is offered at the greeter.
+.Pp
+A hold file means rotation is off.
+.Nm
+then runs
+.Xr framework_autorotate 8
+.Fl release
+and shows
+.Cm auto-rotate-on
+for 2 seconds.
+With no hold file,
+.Nm
+runs
+.Fl hold
+and shows
+.Cm auto-rotate-off
+for 2 seconds.
+.Pp
+The hold file is
+.Pa ~/.framework_hold_autorotate
+in the home directory from the password database for the real
+user id.
+When that lookup fails and the real user id is 0, the file is
+.Pa /root/.framework_hold_autorotate .
+.Ev HOME
+is not used for root.
+When the lookup fails for any other user, the directory is
+.Ev HOME ,
+or
+.Pa /tmp .
+.Pp
+.Nm framework_autorotate
+must be in
+.Ev PATH
+and must accept
+.Fl hold .
+When
+.Nm bosd
+is not in
+.Ev PATH ,
+the hold still changes.
+.Sh ENVIRONMENT
+.Bl -tag -width "DISPLAY"
+.It Ev DISPLAY
+X server for
+.Nm bosd .
+The default is
+.Pa :0 .
+.It Ev HOME
+Fallback directory for the hold file when the password database
+has no home for a non-root user.
+.It Ev PATH
+Searched for
+.Nm framework_autorotate
+and
+.Nm bosd .
+.Nm
+puts
+.Pa /sbin ,
+.Pa /usr/sbin ,
+and
+.Pa /usr/local/sbin
+ahead of the inherited
+.Ev PATH .
+.El
+.Sh FILES
+.Bl -tag -width "~/.framework_hold_autorotate"
+.It Pa ~/.framework_hold_autorotate
+Hold file in the real user's home.
+Present while auto-rotation is off.
+.El
+.Sh EXIT STATUS
+.Nm
+exits 0 when the hold is toggled.
+It exits 1 when
+.Nm framework_autorotate
+is missing or does not accept
+.Fl hold .
+.Sh SEE ALSO
+.Xr bhotkeys 1 ,
+.Xr bosd 1 ,
+.Xr framework_autorotate 8
+.Sh AUTHORS
+.An Devin Teske Aq Mt dteske@FreeBSD.org
