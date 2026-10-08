@@ -1,0 +1,41 @@
+#!/bin/sh
+############################################################ LICENSE
+#
+# Copyright (c) 2026 Devin Teske <dteske@FreeBSD.org>
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+############################################################ IDENT(1)
+#
+# $Title: Enable Framework Laptop autorotation $
+# $Copyright: 2026 Devin Teske. All rights reserved. $
+# $FrauBSD: framework-autorotate-hotkey/bin/auto-rotate-enable.in 2026-10-07 20:32:10 -0700 Devin Teske $
+#
+############################################################ INFORMATION
+#
+# Clear the autorotate hold and show the on glyph.
+#
+############################################################ GLOBALS
+
+pgm="${0##*/}" # Program basename
+
+############################################################ FUNCTIONS
+
+usage()
+{
+	echo "Usage: $pgm" >&2
+	exit 1
+}
+
+############################################################ MAIN
+
+set -e # errexit
+
+[ $# -gt 0 ] && usage # NOTREACHED
+
+@PREFIX@/sbin/framework_autorotate -release
+auto-rotate-osd on 2 &
+
+################################################################################
+# END
+################################################################################

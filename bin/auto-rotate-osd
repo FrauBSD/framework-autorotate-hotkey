@@ -1,0 +1,49 @@
+#!/bin/sh
+############################################################ LICENSE
+#
+# Copyright (c) 2026 Devin Teske <dteske@FreeBSD.org>
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+############################################################ IDENT(1)
+#
+# $Title: Show the autorotate on or off glyph $
+# $Copyright: 2026 Devin Teske. All rights reserved. $
+# $FrauBSD: framework-autorotate-hotkey/bin/auto-rotate-osd 2026-10-07 20:32:10 -0700 Devin Teske $
+#
+############################################################ INFORMATION
+#
+# Show the autorotate on or off glyph with bosd.
+#
+############################################################ ENVIRONMENT
+
+DISPLAY="${DISPLAY:-:0}"
+export DISPLAY
+
+############################################################ GLOBALS
+
+pgm="${0##*/}" # Program basename
+
+############################################################ FUNCTIONS
+
+usage()
+{
+	echo "Usage: $pgm on|off [hold_seconds]" >&2
+	exit 1
+}
+
+############################################################ MAIN
+
+mode="$1"
+hold_seconds="${2:-2}"
+
+case "$mode" in
+on|off) : ok ;;
+*) usage # NOTREACHED
+esac
+
+exec bosd "auto-rotate-$mode" "$hold_seconds"
+
+################################################################################
+# END
+################################################################################

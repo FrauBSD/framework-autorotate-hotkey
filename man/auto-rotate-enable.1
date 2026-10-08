@@ -1,0 +1,49 @@
+.\" Copyright (c) 2026 Devin Teske <dteske@FreeBSD.org>
+.\"
+.\" SPDX-License-Identifier: BSD-2-Clause
+.\"
+.Dd October 7, 2026
+.Dt AUTO-ROTATE-ENABLE 1
+.Os
+.Sh NAME
+.Nm auto-rotate-enable
+.Nd enable screen auto-rotation
+.Sh SYNOPSIS
+.Nm
+.Sh DESCRIPTION
+.Nm
+turns screen auto-rotation on.
+It runs
+.Xr framework_autorotate 8
+.Fl release
+and then
+.Xr auto-rotate-osd 1
+.Cm on .
+.Xr auto-rotate-osd 1
+draws the glyph with
+.Xr bosd 1 .
+.Pp
+.Xr framework_autorotate 8
+.Fl release
+removes
+.Pa ~/.framework_hold_autorotate .
+.Sh EXIT STATUS
+.Nm
+exits 0 after
+.Fl release .
+It exits 1 when given an argument.
+A usage message is printed on standard error.
+It exits with the status of
+.Nm framework_autorotate
+when
+.Fl release
+fails.
+.Sh SEE ALSO
+.Xr auto-rotate-disable 1 ,
+.Xr auto-rotate-osd 1 ,
+.Xr auto-rotate-toggle 1 ,
+.Xr bhotkeys 1 ,
+.Xr bosd 1 ,
+.Xr framework_autorotate 8
+.Sh AUTHORS
+.An Devin Teske Aq Mt dteske@FreeBSD.org

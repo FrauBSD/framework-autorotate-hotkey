@@ -9,11 +9,13 @@
 #
 # $Title: Toggle autorotate hold and show the glyph $
 # $Copyright: 2026 Devin Teske. All rights reserved. $
-# $FrauBSD: framework-autorotate-hotkey/bin/auto-rotate-toggle 2026-10-04 14:18:27 -0700 Devin Teske $
+# $FrauBSD: framework-autorotate-hotkey/bin/auto-rotate-toggle.in 2026-10-07 20:32:20 -0700 Devin Teske $
 #
 ############################################################ INFORMATION
 #
-# Toggle the autorotate hold and show the matching glyph through bosd.
+# Toggle the autorotate hold and show the matching glyph with
+# auto-rotate-osd.
+#
 # The rotate plugin runs this in the session and at the greeter.
 #
 # The hold file is under the real uid's passwd home, the same
@@ -22,18 +24,6 @@
 # user's home. Greeter helpers often set HOME to the login
 # user; do not trust $HOME for this check.
 #
-############################################################ ENVIRONMENT
-
-DISPLAY=${DISPLAY:-:0}
-export DISPLAY
-
-# Session PATH often omits sbin, where framework_autorotate lives
-_PATH="$PATH"
-PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
-[ "$_PATH" ] && PATH="$PATH:$_PATH"
-unset _PATH
-export PATH
-
 ############################################################ GLOBALS
 
 pgm="${0##*/}" # Program basename
@@ -46,25 +36,22 @@ FAILURE=1
 
 ############################################################ FUNCTIONS
 
-quietly() { "$@" > /dev/null 2>&1; }
-have() { quietly command -v "$@"; }
-
 passwd_home()
 {
 	getent passwd "$1" 2> /dev/null | cut -d: -f6
 }
 
-show_osd()
+usage()
 {
-	local mode="$1"
-
-	have bosd || return 0
-	bosd "auto-rotate-$mode" 2 &
+	echo "Usage: $pgm" >&2
+	exit $FAILURE
 }
 
 ############################################################ MAIN
 
 set -e # errexit
+
+[ $# -gt 0 ] && usage # NOTREACHED
 
 uid=$( id -u )
 hold_home=$( passwd_home "$uid" ) || hold_home=
@@ -77,20 +64,12 @@ if [ ! "$hold_home" ]; then
 fi
 hold="$hold_home/.framework_hold_autorotate"
 
-if ! have framework_autorotate ||
-   ! framework_autorotate -h 2>&1 | grep -qF -- "-hold"
-then
-	echo "$pgm: framework_autorotate -hold/-release" \
-		"not available" >&2
-	exit $FAILURE
-fi
-
 if [ -e "$hold" ]; then
-	framework_autorotate -release
-	show_osd on
+	@PREFIX@/sbin/framework_autorotate -release
+	auto-rotate-osd on 2 &
 else
-	framework_autorotate -hold
-	show_osd off
+	@PREFIX@/sbin/framework_autorotate -hold
+	auto-rotate-osd off 2 &
 fi
 
 exit $SUCCESS

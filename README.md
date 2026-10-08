@@ -1,4 +1,4 @@
-[//]: # ($FrauBSD: framework-autorotate-hotkey/README.md 2026-10-04 14:18:27 -0700 Devin Teske $)
+[//]: # ($FrauBSD: framework-autorotate-hotkey/README.md 2026-10-07 20:32:10 -0700 Devin Teske $)
 
 # framework-autorotate-hotkey
 
@@ -29,8 +29,9 @@ Home: [FrauBSD/framework-autorotate-hotkey](https://github.com/FrauBSD/framework
 make install    # PREFIX=/usr/local by default
 ```
 
-Installs `auto-rotate-toggle` into `${PREFIX}/bin` and `rotate`
-into `${PREFIX}/share/bhotkeys/plugins.d`.
+Installs `auto-rotate-toggle`, `auto-rotate-enable`,
+`auto-rotate-disable`, and `auto-rotate-osd` into `${PREFIX}/bin`,
+and `rotate` into `${PREFIX}/share/bhotkeys/plugins.d`.
 
 ## Plugin
 

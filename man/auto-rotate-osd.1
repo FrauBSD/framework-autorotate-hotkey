@@ -1,0 +1,57 @@
+.\" Copyright (c) 2026 Devin Teske <dteske@FreeBSD.org>
+.\"
+.\" SPDX-License-Identifier: BSD-2-Clause
+.\"
+.Dd October 7, 2026
+.Dt AUTO-ROTATE-OSD 1
+.Os
+.Sh NAME
+.Nm auto-rotate-osd
+.Nd show the autorotate glyph
+.Sh SYNOPSIS
+.Nm
+.Cm on | off
+.Op Ar hold_seconds
+.Sh DESCRIPTION
+.Nm
+shows the autorotate glyph with
+.Xr bosd 1 .
+.Cm on
+shows
+.Cm auto-rotate-on .
+.Cm off
+shows
+.Cm auto-rotate-off .
+.Ar hold_seconds
+is how many seconds the glyph stays up.
+The default is 2.
+.Sh ENVIRONMENT
+.Bl -tag -width "DISPLAY"
+.It Ev DISPLAY
+X server for
+.Nm bosd .
+The default is
+.Pa :0 .
+.El
+.Sh EXIT STATUS
+.Nm
+exits 1 when the mode is not
+.Cm on
+or
+.Cm off .
+When
+.Nm bosd
+is not installed,
+the shell exits 127.
+Otherwise it runs
+.Nm bosd
+and exits with that status.
+.Sh SEE ALSO
+.Xr auto-rotate-disable 1 ,
+.Xr auto-rotate-enable 1 ,
+.Xr auto-rotate-toggle 1 ,
+.Xr bhotkeys 1 ,
+.Xr bosd 1 ,
+.Xr framework_autorotate 8
+.Sh AUTHORS
+.An Devin Teske Aq Mt dteske@FreeBSD.org

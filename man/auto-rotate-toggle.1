@@ -2,7 +2,7 @@
 .\"
 .\" SPDX-License-Identifier: BSD-2-Clause
 .\"
-.Dd October 5, 2026
+.Dd October 7, 2026
 .Dt AUTO-ROTATE-TOGGLE 1
 .Os
 .Sh NAME
@@ -13,6 +13,9 @@
 .Sh DESCRIPTION
 .Nm
 toggles the autorotate hold and shows the new state with
+.Xr auto-rotate-osd 1 .
+.Xr auto-rotate-osd 1
+draws the glyph with
 .Xr bosd 1 .
 The usual chord is
 .Sy Super+R .
@@ -27,16 +30,12 @@ A hold file means rotation is off.
 then runs
 .Xr framework_autorotate 8
 .Fl release
-and shows
-.Cm auto-rotate-on
-for 2 seconds.
+and shows the on glyph.
 With no hold file,
 .Nm
 runs
 .Fl hold
-and shows
-.Cm auto-rotate-off
-for 2 seconds.
+and shows the off glyph.
 .Pp
 The hold file is
 .Pa ~/.framework_hold_autorotate
@@ -50,40 +49,11 @@ When the lookup fails for any other user, the directory is
 .Ev HOME ,
 or
 .Pa /tmp .
-.Pp
-.Nm framework_autorotate
-must be in
-.Ev PATH
-and must accept
-.Fl hold .
-When
-.Nm bosd
-is not in
-.Ev PATH ,
-the hold still changes.
 .Sh ENVIRONMENT
-.Bl -tag -width "DISPLAY"
-.It Ev DISPLAY
-X server for
-.Nm bosd .
-The default is
-.Pa :0 .
+.Bl -tag -width "HOME"
 .It Ev HOME
 Fallback directory for the hold file when the password database
 has no home for a non-root user.
-.It Ev PATH
-Searched for
-.Nm framework_autorotate
-and
-.Nm bosd .
-.Nm
-puts
-.Pa /sbin ,
-.Pa /usr/sbin ,
-and
-.Pa /usr/local/sbin
-ahead of the inherited
-.Ev PATH .
 .El
 .Sh FILES
 .Bl -tag -width "~/.framework_hold_autorotate"
@@ -94,11 +64,17 @@ Present while auto-rotation is off.
 .Sh EXIT STATUS
 .Nm
 exits 0 when the hold is toggled.
-It exits 1 when
+It exits 1 when given an argument.
+A usage message is printed on standard error.
+When
 .Nm framework_autorotate
-is missing or does not accept
-.Fl hold .
+fails,
+.Nm
+exits with that status.
 .Sh SEE ALSO
+.Xr auto-rotate-disable 1 ,
+.Xr auto-rotate-enable 1 ,
+.Xr auto-rotate-osd 1 ,
 .Xr bhotkeys 1 ,
 .Xr bosd 1 ,
 .Xr framework_autorotate 8
